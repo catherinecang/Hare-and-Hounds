@@ -25,10 +25,39 @@ EDGES = {
     10: {7, 8, 9},
 }
 
-initial_position = (HOUND_PLAYER, 0, 1, 3, 10, 0)
+def _compress(turn, hound1, hound2, hound3, hare, stalls):
+    hound_num = 0
+    for i in range(hound1):
+        hound_num += (9 - i) * (10 - i) // 2
+    for i in range(hound1 + 1, hound2):
+        hound_num += (10 - i)
+    hound_num += hound3 - (hound2 + 1)
+
+    left = turn * (2 ** 7)
+    left += 11 * stalls + hare
+    return left * (2 ** 8) + hound_num
+
+def _uncompress(num):
+    left = num // (2 ** 8)
+    hound_num = num % (2 ** 8)
+    hound1 = 0
+    while (9 - hound1) * (10 - hound1) // 2 <= hound_num:
+        hound_num -= (9 - hound1) * (10 - hound1) // 2
+        hound1 += 1
+    hound2 = hound1 + 1
+    while (10 - hound2) <= hound_num:
+        hound_num -= (10 - hound2)
+        hound2 += 1
+    hound3 = hound2 + 1 + hound_num
+    turn = left // (2 ** 7)
+    stalls = (left % (2 ** 7)) // 11
+    hare = (left % (2 ** 7)) % 11
+    return (turn, hound1, hound2, hound3, hare, stalls)
+
+initial_position = _compress(HOUND_PLAYER, 0, 1, 3, 10, 0)
 
 def primitive(pos):
-    turn, hound1, hound2, hound3, hare, stalls = pos
+    turn, hound1, hound2, hound3, hare, stalls = _uncompress(pos)
     if hare == 0: # Hare makes it to other side of board
         return HOUND_LOSS
     if turn == HARE_PLAYER:
@@ -45,7 +74,7 @@ def primitive(pos):
     return UNDECIDED
 
 def generate_moves(pos):
-    turn, hound1, hound2, hound3, hare, stalls = pos
+    turn, hound1, hound2, hound3, hare, stalls = _uncompress(pos)
     occupied = {hound1, hound2, hound3, hare}
     if turn == HOUND_PLAYER:
         for init_space in (hound1, hound2, hound3):
@@ -59,7 +88,7 @@ def generate_moves(pos):
                 yield new_space
 
 def do_move(pos, move):
-    turn, hound1, hound2, hound3, hare, stalls = pos
+    turn, hound1, hound2, hound3, hare, stalls = _uncompress(pos)
     if turn == HOUND_PLAYER:
         init_space, new_space = move
         if (init_space - 1) // 3 == (new_space - 1) // 3:
@@ -76,4 +105,4 @@ def do_move(pos, move):
         hare = move
         turn = HOUND_PLAYER
         new_pos = (turn, hound1, hound2, hound3, hare, stalls)
-    return new_pos
+    return _compress(*new_pos)
