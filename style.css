@@ -1,0 +1,50 @@
+.square, .square-edge, .square-0 {
+	width: 100px;
+	height: 100px;
+	margin-bottom: 40px;
+	font-size: 30px;
+	margin-left: 45px;
+}
+
+.square-edge {
+	margin-left: 160px;
+}
+
+.square-0 {
+	margin-left: 11px;
+}
+
+.occupied-hound, .hare{
+	background-size: 80px;
+	background-position: center;
+	background-repeat: no-repeat; 
+}
+
+.occupied-hound{
+	background-image: url(hound.png);
+}
+
+.hare{
+	background-image: url(hare.png);
+}
+
+.vr, .line, .diag{
+    width:2px;
+    background-color:#000;
+    position:absolute;
+    height: 40px;
+}
+.line {
+	height: 50px;
+	-webkit-transform: rotate(270deg);
+}
+.diag.up {
+	height: 68px;
+	-webkit-transform: rotate(50deg);
+}
+
+.diag.down {
+	height: 68px;
+	-webkit-transform: rotate(310deg);
+}
+
