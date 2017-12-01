@@ -1,4 +1,11 @@
-.square, .square-edge, .square-0 {
+.square.edge {
+	margin-left: 160px;
+}
+
+.square.zero {
+	margin-left: 11px;
+}
+.square{
 	width: 100px;
 	height: 100px;
 	margin-bottom: 40px;
@@ -6,15 +13,8 @@
 	margin-left: 45px;
 }
 
-.square-edge {
-	margin-left: 160px;
-}
 
-.square-0 {
-	margin-left: 11px;
-}
-
-.occupied-hound, .hare{
+.occupied-hound, .occupied-hare{
 	background-size: 80px;
 	background-position: center;
 	background-repeat: no-repeat; 
@@ -24,7 +24,7 @@
 	background-image: url(hound.png);
 }
 
-.hare{
+.occupied-hare{
 	background-image: url(hare.png);
 }
 

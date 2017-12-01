@@ -11,3 +11,5 @@ api.http.add_middleware(CORSMiddleware(api))
 def next_best_move(pos: hug.types.delimited_list()):
     pos = [int(i) for i in pos]
     return solve_next_moves(compress(*pos))
+
+    #hug -f server.py
