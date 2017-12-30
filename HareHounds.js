@@ -22,7 +22,8 @@ $(function (){
 	$("#tutor").click(function(){
 		toggleTutor = !toggleTutor;
 		if (toggleTutor==false){
-			$('.square').removeClass("btn-danger btn-warning btn-success");
+			toggleClasses('.square', 'btn-outline-dark', "btn-danger btn-warning btn-success")
+			//$('.square').removeClass("btn-danger btn-warning btn-success");
 		}
 	})
 	$(document).on('click', '.open', function() {
@@ -33,13 +34,13 @@ $(function (){
 		});
 		curr_board = curr_board[0]['board'].toString();
 		list_to_board(string_to_list_board(curr_board));
+		checkWinPerson();
 		doComputerMove();
 	});
 
 	$(document).on('click', '.occupied-hound', function() {
 		var this_id = $(this).attr('id');
 		var next_moves = possibleMoves(parseInt(this_id));
-		console.log(next_moves);
 		for (id in next_moves){
 			if (toggleTutor){
 				labelVal(parseInt(this_id));
@@ -61,6 +62,7 @@ $(function (){
 		getMove();
 		curr_board = move.toString();
 		list_to_board(string_to_list_board(curr_board));
+		checkWinComp();
 	}
 	function getMove(){
 		$.ajax({
@@ -110,12 +112,35 @@ $(function (){
 			var right_move = [location, next[i]];
 			for (var j in solns){
 				if (JSON.stringify(right_move) === JSON.stringify(solns[j]['move']) && solns[j]['value']===2){
-					toggleClasses(makeId(next[i]), 'btn-danger open', 'btn-outline-dark');
+					toggleClasses(makeId(next[i]), 'btn-danger open', 'btn-outline-dark btn-success btn-outline-primary');
 				}
 				else if (JSON.stringify(right_move) === JSON.stringify(solns[j]['move'])) {
-					toggleClasses(makeId(next[i]), 'btn-success open', 'btn-outline-dark');
+					toggleClasses(makeId(next[i]), 'btn-success open', 'btn-outline-dark btn-danger btn-outline-primary');
 				}
 			}
+		}
+	}
+
+	function checkWinPerson(){
+		var user_win = solns.filter(function(i){
+			return JSON.stringify(user_move) === JSON.stringify(i['move'])
+		});
+		console.log(user_win[0]);
+		if(user_win[0]['remoteness'] === 0 && user_win[0]['value']===1){
+			console.log("tru");
+			$('#end').html("Hounds Win");
+			$('.btn').unbind('click');
+		}
+		
+
+	}
+
+	function checkWinComp(){
+		console.log(move);
+		if(move[5] === 10 || move[4] === 0){
+			console.log('hare win');
+			$('#end').html("Hare Wins");
+			$('.btn').unbind('click');
 		}
 	}
 
@@ -142,7 +167,7 @@ function filterRemote(filtered){
 
 function filterValue(solns){
 	soln_win = solns.filter(function (i){
-		return i['value'] != 2
+		return i['value'] != 1
 	});
 	if (soln_win.length != 0){
 		solns = soln_win
